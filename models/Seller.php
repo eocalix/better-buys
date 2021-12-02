@@ -2,7 +2,10 @@
     $ds = DIRECTORY_SEPARATOR;
     $base_dir = realpath(dirname(__FILE__) . $ds . '..') . $ds;
 
+    // Including Database
     require_once("{$base_dir}includes{$ds}Database.php");
+    // Including Bcrypt
+    require_once("{$base_dir}includes{$ds}Bcrypt.php");
 
     class Seller 
     {
@@ -24,6 +27,21 @@
             return (!empty($value));
         }
 
+        // Check if email is unique or not
+        public function check_unique_email() {
+            global $database;
+
+            $this->email = trim(htmlspecialchars(strip_tags($this->email)));
+
+            $sql = "SELECT id FROM $this->table WHERE email = '" . $database->escape_value($this->email) . "'";
+
+            $result = $database->query($sql);
+
+            $seller_id = $database->fetch_row($result);
+
+            return empty($seller_id);
+        }
+
         // Saving new data in our database
         public function register_seller() {
             global $database;
@@ -43,7 +61,7 @@
             (
                 '" . $database->escape_value($this->name) . "',
                 '" . $database->escape_value($this->email) . "',
-                '" . $database->escape_value($this->password) . "',
+                '" . $database->escape_value(Bcrypt::hashPassword($this->password)) . "',
                 '" . $database->escape_value($this->image) . "',
                 '" . $database->escape_value($this->address) . "',
                 '" . $database->escape_value($this->description) . "'

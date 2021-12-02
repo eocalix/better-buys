@@ -71,13 +71,23 @@
             die();
         }
 
-        if ($id = $seller->register_seller()) {
-            echo json_encode(array('success' => 1, 'message' => 'Seller registered!'));
+        // Check if email is unique
+        if ($seller->check_unique_email()) {
+            // Register
+            if ($id = $seller->register_seller()) {
+                echo json_encode(array('success' => 1, 'message' => 'Seller registered!'));
+            }
+            else {
+                http_response_code(500);
+                echo json_encode(array('success' => 0, 'message' => 'Internal Server Error'));
+            }
         }
         else {
-            http_response_code(500);
-            echo json_encode(array('success' => 0, 'message' => 'Internal Server Error'));
+            http_response_code(401);
+                echo json_encode(array('success' => 0, 'message' => 'Email already exists!'));
         }
+
+        
     }
     else {
         die(header('HTTP/1.1 405 Request Method Not Allowed'));

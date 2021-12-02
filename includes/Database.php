@@ -2,7 +2,7 @@
     define('HOST', 'localhost');
     define('USER_NAME', 'root');
     define('PASSWORD', '');
-    define('DB_NAME', 'db_better_buys');
+    define('DB_NAME', 'better_buys');
 
     // class DB start
     class Database {
